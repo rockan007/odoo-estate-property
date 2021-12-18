@@ -80,6 +80,9 @@
                                     <field name="garden_orientation" string="Garden Orientation"></field>
                                 </group>
                             </page>
+                            <page string="Offers">
+                                <field name="offer_ids" widget="estate_property_offer_view_tree"></field>
+                            </page>
                             <page string="Other Info">
                                 <group>
                                     <field name="user_id"></field>
