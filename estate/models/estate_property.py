@@ -22,3 +22,6 @@ class EstateProperty(models.Model):
         help="Orientation is used to info the orientation of the garden"
 
     )
+    property_type_id= fields.Many2one("estate.property.type",string="Property type")
+    user_id= fields.Many2one('res.users',string="Salesman",index=True,tracking=True, default=lambda self:self.env.user)
+    partner_id = fields.Many2one('res.partner',string="Buyer",index= True,tracking=True,copy = False)
