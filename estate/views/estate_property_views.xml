@@ -26,15 +26,29 @@
         <field name="model">estate.property</field>
         <field name="arch" type="xml">
             <form string="Estate Property">
+                <header>
+                    <button name="action_cancel" string="Cancel" type="object"/>
+                    <button name="action_sold" string="Sold" type="object"/>
+                </header>
                 <sheet>
                     <field name="name" class="h2"></field>
                     <field name="tag_ids" widget="many2many_tags"></field>
                     <group>
                         <group>
-                            <field name="property_type_id"></field>
+                            <field name="status" attrs="{'readonly':True}"></field>
                         </group>
+                        
                         <group>
                             <field name="expected_price" string="Expected Price"></field>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="property_type_id"></field>
+                        </group>
+
+                        <group>
+                            <field name="best_price" string="Best price" attrs="{'readonly':True}"></field>
                         </group>
                     </group>
                     <group>
@@ -42,15 +56,12 @@
                             <field name="postcode"></field>
                         </group>
                         <group>
-                            <field name="best_price" string="Best price" attrs="{'readonly':True}"></field>
+                            <field name="selling_price" string="Selling Price"></field>
                         </group>
                     </group>
                     <group>
                         <group>
                             <field name="date_availability" string="Available Date"></field>
-                        </group>
-                        <group>
-                            <field name="selling_price" string="Selling Price"></field>
                         </group>
                     </group>
                     <group>

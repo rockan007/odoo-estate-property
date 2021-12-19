@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models,exceptions
 
 class EstateProperty(models.Model):
     _name="estate.property"
@@ -31,6 +31,12 @@ class EstateProperty(models.Model):
     total_area = fields.Integer(compute="_compute_total_area")
     best_price = fields.Float(compute="_compute_best_price")
 
+    status = fields.Selection(
+        string="Status",
+        selection= [('new','New'),('canceled','Canceled'),('sold','Sold')],
+        default = 'new'
+    )
+
     @api.depends('living_area','garden_area')
     def _compute_total_area(self):
         for record in self:
@@ -39,7 +45,7 @@ class EstateProperty(models.Model):
     @api.depends('offer_ids')
     def _compute_best_price(self):
         for record in self:
-            record.best_price= max(record.offer_ids.mapped('price'))
+            record.best_price= max(record.offer_ids.mapped('price')) if len(record.offer_ids)>0 else 0
 
     @api.onchange('garden')
     def _onchange_garden(self):
@@ -49,3 +55,27 @@ class EstateProperty(models.Model):
         else:
             self.garden_area = 0
             self.garden_orientation = ""
+    
+    def action_cancel(self):
+        for record in self:
+            if record.status == 'new':
+                record.status = 'canceled'
+                return True
+            elif record.status == 'sold':
+                raise exceptions.UserError("Sold properties can't be cancel!")
+            else:
+                raise exceptions.UserError("The property has been canceled!")
+        
+        return True
+
+    def action_sold(self):
+        for record in self:
+            if record.status == 'new':
+                record.status = 'sold'
+                return True
+            elif record.status == 'canceled':
+                raise exceptions.UserError("Canceled properties can't be sold!")
+            else:
+                raise exceptions.UserError("The property has been sold")
+        
+        return True
