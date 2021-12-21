@@ -1,4 +1,7 @@
-from odoo import api, fields, models,exceptions
+from odoo import api, fields, models,exceptions,tools,_
+
+from odoo.exceptions import ValidationError
+from decimal import *
 
 class EstateProperty(models.Model):
     _name="estate.property"
@@ -36,6 +39,11 @@ class EstateProperty(models.Model):
         selection= [('new','New'),('canceled','Canceled'),('sold','Sold')],
         default = 'new'
     )
+
+    _sql_constraints=[
+        ('check_expected_price','CHECK (expected_price > 0)','A property expected price must be strictly positive'),
+        ('check_selling_price','CHECK (selling_price >= 0)','A property selling price must be positive')
+    ]
 
     @api.depends('living_area','garden_area')
     def _compute_total_area(self):
@@ -79,3 +87,12 @@ class EstateProperty(models.Model):
                 raise exceptions.UserError("The property has been sold")
         
         return True
+    
+    @api.constrains('selling_price','expected_price')
+    def _check_selling_price(self):
+        for record in self:
+            min_selling_price= float(Decimal(record.expected_price)*Decimal(0.9)) 
+            compared_result= tools.float_compare(record.selling_price,min_selling_price,precision_digits=3)
+            print("record in self")
+            if (not tools.float_is_zero(record.selling_price,precision_digits=3)) and (compared_result < 0):
+                raise ValidationError(_('The selling price cannot be lower than 90 percent of the expected price.'))
