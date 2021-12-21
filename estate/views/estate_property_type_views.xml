@@ -12,7 +12,19 @@
         <field name="arch" type="xml">
             <form string="Esatte property Type">
                 <sheet>
-                    <field name="name"></field>
+                    <field name="name" class="h2"></field>
+                    <notebook>
+                        <page string="Properties">
+                            <field name="property_ids">
+                                <tree>
+                                    <field name="name" string="Title"></field>
+                                    <field name="expected_price" string="Expected Price"></field>
+                                    <field name="status" string="Status"></field>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
                 </sheet>
             </form>
         </field>
