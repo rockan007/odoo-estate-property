@@ -34,6 +34,13 @@ class EstateProperty(models.Model):
     total_area = fields.Integer(compute="_compute_total_area")
     best_price = fields.Float(compute="_compute_best_price")
 
+    state = fields.Selection(
+        string="State",
+        copy=False,
+        selection= [('new','NEW'),('received','OFFER RECEIVED'),('accepted','OFFER ACCEPTED'),('sold','SOLD'),('canceled','CANCELD')],
+        default= 'new'
+    )
+
     status = fields.Selection(
         string="Status",
         selection= [('new','New'),('canceled','Canceled'),('sold','Sold')],
@@ -68,6 +75,7 @@ class EstateProperty(models.Model):
         for record in self:
             if record.status == 'new':
                 record.status = 'canceled'
+                record.state = 'canceled'
                 return True
             elif record.status == 'sold':
                 raise exceptions.UserError("Sold properties can't be cancel!")
@@ -80,6 +88,7 @@ class EstateProperty(models.Model):
         for record in self:
             if record.status == 'new':
                 record.status = 'sold'
+                record.state = 'sold'
                 return True
             elif record.status == 'canceled':
                 raise exceptions.UserError("Canceled properties can't be sold!")
@@ -96,3 +105,19 @@ class EstateProperty(models.Model):
             print("record in self")
             if (not tools.float_is_zero(record.selling_price,precision_digits=3)) and (compared_result < 0):
                 raise ValidationError(_('The selling price cannot be lower than 90 percent of the expected price.'))
+    
+    @api.onchange('offer_ids')
+    def _onchange_state(self):
+        state = "new"
+        if self.status =='new':
+            if tools.float_compare(self.selling_price,0,precision_digits=3)> 0:
+                state="accepted"
+            elif len(self.offer_ids)>0:
+                state ="received"
+            else:
+                state = self.status
+
+        self.state = state
+                
+            
+            

@@ -29,6 +29,7 @@
                 <header>
                     <button name="action_cancel" string="Cancel" type="object"/>
                     <button name="action_sold" string="Sold" type="object"/>
+                    <field name="state" widget="statusbar" attrs="{'invisible':[('status','==','canceled')]}" statusbar_visible="new,received,accepted,sold"></field>
                 </header>
                 <sheet>
                     <field name="name" class="h2"></field>
