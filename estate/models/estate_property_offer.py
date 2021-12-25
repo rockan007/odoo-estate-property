@@ -4,6 +4,7 @@ import datetime
 class EstatePropertyOffer(models.Model):
     _name="estate.property.offer"
     _description = "offer of estate property"
+    _order =  'price desc'
 
     price=fields.Float()
     status = fields.Selection(
