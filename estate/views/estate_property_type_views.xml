@@ -23,6 +23,15 @@
         <field name="arch" type="xml">
             <form string="Esatte property Type">
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(estate_property_offer_action)d" type="action"
+                                class="oe_stat_button" icon="fa-bars"
+                                attrs="{'invisible': [('offer_count','=', 0)]}">
+                            <field name="offer_count"/>
+                            <span attrs="{'invisible': [('offer_count','&gt;', 1)]}">Offer</span>
+                            <span attrs="{'invisible': [('offer_count','&lt;=', 1)]}">Offers</span>
+                        </button>
+                    </div>
                     <field name="name" class="h2"></field>
                     <notebook>
                         <page string="Properties">
