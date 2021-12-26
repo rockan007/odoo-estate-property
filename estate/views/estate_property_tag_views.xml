@@ -22,8 +22,8 @@
     <record id="estate_property_tag_view_tree" model="ir.ui.view">
         <field name="name">estate.property.tag.view.tree</field>
         <field name="model">estate.property.tag</field>
-        <field name="arch" type="xml">
-            <tree string="Tags">
+        <field name="arch" type="xml" >
+            <tree string="Tags" editable="bottom">
                 <field name="name"></field>
             </tree>
         </field>
