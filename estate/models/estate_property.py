@@ -119,6 +119,12 @@ class EstateProperty(models.Model):
                 state = self.status
 
         self.state = state
+
+    def unlink(self):
+        for record in self:
+            if  not(record.state=='new' or record.state =='canceled'):
+                raise exceptions.UserError('Only new and canceled property can be deleted!')
+        return super().unlink()
                 
             
             

@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, exceptions, fields, models,tools
 import datetime
 
 class EstatePropertyOffer(models.Model):
@@ -59,6 +59,14 @@ class EstatePropertyOffer(models.Model):
     def _reset_property_id(self,record):
         record.property_id.selling_price= 0
         record.property_id.partner_id = None
+    
+    @api.model
+    def create(self,vals):
+        estate_property = self.env['estate.property'].browse(vals['property_id'])
+        if tools.float_compare(estate_property.best_price,vals['price'],precision_digits=3)>=0:
+            raise exceptions.UserError("The offer must be higher than $%.2f" % estate_property.best_price)
+        estate_property.state='received'
+        return super().create(vals)
 
 
    
